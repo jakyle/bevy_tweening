@@ -1,5 +1,8 @@
 # Bevy Tweening
 
+THIS IS A FORKED REPO OF https://github.com/djeedai/bevy_extra/tree/main/crates/bevy_tweening, I DID NOT WRITE THE ORIGINAL CODE FOR THIS, just made some edits
+to allow auto removal of components if they are animating once and done.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Doc](https://docs.rs/bevy_tweening/badge.svg)](https://docs.rs/bevy_tweening) [![Crate](https://img.shields.io/crates/v/bevy_tweening.svg)](https://crates.io/crates/bevy_tweening)
 
 Tweening animation plugin for Bevy.
