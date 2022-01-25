@@ -1,12 +1,10 @@
 [package]
 name = "bevy_tweening"
-version = "0.2.0"
-authors = ["François Mockers <mockersf@gmail.com>", "Jerome Humbert <djeedai@gmail.com>"]
+version = "0.2.1"
+authors = ["François Mockers <mockersf@gmail.com>", "Jerome Humbert <djeedai@gmail.com>", "James Jackson <jjackson360@gmail.com>"]
 edition = "2021"
 description = "Tweening plugin for Bevy"
-repository = "https://github.com/djeedai/bevy_extra"
-homepage = "https://github.com/djeedai/bevy_extra/tree/main/crates/bevy_tweening"
-documentation = "https://docs.rs/bevy_tweening"
+repository = "https://github.com/jakyle/bevy_tweening"
 keywords = ["bevy", "animation", "easing", "tweening"]
 license = "MIT"
 readme = "README.md"

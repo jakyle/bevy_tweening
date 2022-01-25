@@ -198,6 +198,202 @@ impl Into<EaseMethod> for EaseFunction {
     }
 }
 
+/// trait for animating
+pub trait Animate<T, U>
+where
+    T: Lens<U>,
+    U: Component,
+{
+    // /// The type of the lens
+    // type Lens;
+
+    /// apply interpolation to the component
+    fn apply(&mut self, target: &mut U, ratio: f32);
+
+    /// get the tweening type of the animation
+    fn get_tweening_type(&self) -> TweeningType;
+
+    /// get the easing function
+    fn get_easing_function(&self) -> EaseMethod;
+
+    /// get animation state
+    fn get_state(&self) -> AnimatorState;
+
+    /// get the animation timing
+    fn get_timer(&mut self) -> &mut Timer;
+
+    /// checks if animation is paused
+    fn is_paused(&mut self) -> &mut bool;
+
+    /// get direction of the animation
+    fn get_lens(&self) -> T;
+
+    /// get animation direction
+    fn get_direction(&mut self) -> &mut i16;
+}
+
+/// Component to control the animation of another component, with translation
+#[derive(Component)]
+pub struct ScaleAnimator {
+    ease_function: EaseMethod,
+    timer: Timer,
+
+    /// Control if this animation is played or not.
+    pub state: AnimatorState,
+    paused: bool,
+    tweening_type: TweeningType,
+    direction: i16,
+    lens: TransformScaleLens,
+}
+
+impl std::fmt::Debug for ScaleAnimator {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Animator")
+            .field("state", &self.state)
+            .finish()
+    }
+}
+
+impl ScaleAnimator {
+    /// Create a new animator component from an easing function, tweening type, and a lens.
+    /// The type `T` of the component to animate can generally be deducted from the lens type itself.
+    pub fn new(
+        ease_function: impl Into<EaseMethod>,
+        tweening_type: TweeningType,
+        lens: TransformScaleLens,
+    ) -> Self {
+        ScaleAnimator {
+            ease_function: ease_function.into(),
+            timer: match tweening_type {
+                TweeningType::Once { duration } => Timer::new(duration, false),
+                TweeningType::Loop { duration, .. } => Timer::new(duration, false),
+                TweeningType::PingPong { duration, .. } => Timer::new(duration, false),
+            },
+            state: AnimatorState::Playing,
+            paused: false,
+            tweening_type,
+            direction: 1,
+            lens: lens,
+        }
+    }
+}
+
+impl Animate<TransformScaleLens, Transform> for ScaleAnimator {
+    #[inline(always)]
+    fn apply(&mut self, target: &mut Transform, ratio: f32) {
+        self.lens.lerp(target, ratio);
+    }
+
+    fn get_tweening_type(&self) -> TweeningType {
+        self.tweening_type
+    }
+
+    fn get_easing_function(&self) -> EaseMethod {
+        self.ease_function
+    }
+
+    fn get_state(&self) -> AnimatorState {
+        self.state
+    }
+
+    fn get_timer(&mut self) -> &mut Timer {
+        &mut self.timer
+    }
+
+    fn is_paused(&mut self) -> &mut bool {
+        &mut self.paused
+    }
+
+    fn get_lens(&self) -> TransformScaleLens {
+        self.lens
+    }
+
+    fn get_direction(&mut self) -> &mut i16 {
+        &mut self.direction
+    }
+}
+
+/// Component to control the animation of another component, with translation
+#[derive(Component)]
+pub struct TranslationAnimator {
+    ease_function: EaseMethod,
+    timer: Timer,
+
+    /// Control if this animation is played or not.
+    pub state: AnimatorState,
+    paused: bool,
+    tweening_type: TweeningType,
+    direction: i16,
+    lens: TransformPositionLens,
+}
+
+impl std::fmt::Debug for TranslationAnimator {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Animator")
+            .field("state", &self.state)
+            .finish()
+    }
+}
+
+impl TranslationAnimator {
+    /// Create a new animator component from an easing function, tweening type, and a lens.
+    /// The type `T` of the component to animate can generally be deducted from the lens type itself.
+    pub fn new(
+        ease_function: impl Into<EaseMethod>,
+        tweening_type: TweeningType,
+        lens: TransformPositionLens,
+    ) -> Self {
+        TranslationAnimator {
+            ease_function: ease_function.into(),
+            timer: match tweening_type {
+                TweeningType::Once { duration } => Timer::new(duration, false),
+                TweeningType::Loop { duration, .. } => Timer::new(duration, false),
+                TweeningType::PingPong { duration, .. } => Timer::new(duration, false),
+            },
+            state: AnimatorState::Playing,
+            paused: false,
+            tweening_type,
+            direction: 1,
+            lens: lens,
+        }
+    }
+}
+
+impl Animate<TransformPositionLens, Transform> for TranslationAnimator {
+    #[inline(always)]
+    fn apply(&mut self, target: &mut Transform, ratio: f32) {
+        self.lens.lerp(target, ratio);
+    }
+
+    fn get_tweening_type(&self) -> TweeningType {
+        self.tweening_type
+    }
+
+    fn get_easing_function(&self) -> EaseMethod {
+        self.ease_function
+    }
+
+    fn get_state(&self) -> AnimatorState {
+        self.state
+    }
+
+    fn get_timer(&mut self) -> &mut Timer {
+        &mut self.timer
+    }
+
+    fn is_paused(&mut self) -> &mut bool {
+        &mut self.paused
+    }
+
+    fn get_lens(&self) -> TransformPositionLens {
+        self.lens
+    }
+
+    fn get_direction(&mut self) -> &mut i16 {
+        &mut self.direction
+    }
+}
+
 /// Component to control the animation of another component.
 #[derive(Component)]
 pub struct Animator<T> {
