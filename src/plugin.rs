@@ -65,7 +65,7 @@ pub fn animate_animator_system<T, U, V>(
             if animator.get_timer().finished() {
                 match animator.get_tweening_type() {
                     TweeningType::Once { .. } => {
-                        commands.entity(entity).remove::<TranslationAnimator>();
+                        commands.entity(entity).remove::<T>();
                     }
                     TweeningType::Loop { pause, .. } => {
                         if let Some(pause) = pause {
