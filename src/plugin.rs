@@ -15,9 +15,11 @@ impl Plugin for TweeningPlugin {
             .add_system(component_animator_system::<Text>)
             .add_system(component_animator_system::<Style>)
             .add_system(component_animator_system::<Sprite>)
-            .add_system(animate_animator_system::<ScaleAnimator, TransformScaleLens, Transform>)
-            .add_system(
-                animate_animator_system::<TranslationAnimator, TransformPositionLens, Transform>,
+            .add_system_set_to_stage(
+                CoreStage::PreUpdate,
+                SystemSet::new()
+                    .with_system(animate_animator_system::<ScaleAnimator, TransformScaleLens, Transform>)
+                    .with_system(animate_animator_system::<TranslationAnimator, TransformPositionLens, Transform>)
             )
             .add_system(asset_animator_system::<ColorMaterial>);
     }
