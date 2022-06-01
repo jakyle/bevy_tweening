@@ -11,7 +11,7 @@ pub struct TweeningPlugin;
 
 impl Plugin for TweeningPlugin {
     fn build(&self, app: &mut App) {
-        app.add_system(component_animator_system::<Transform>)
+        app.add_event::<AnimateCompleteEvent>().add_system(component_animator_system::<Transform>)
             .add_system(component_animator_system::<Text>)
             .add_system(component_animator_system::<Style>)
             .add_system(component_animator_system::<Sprite>)
@@ -25,7 +25,12 @@ impl Plugin for TweeningPlugin {
     }
 }
 
+#[derive(Copy, Clone, Debug)]
+/// Event that is emitted when an animator completes
+pub struct AnimateCompleteEvent(pub Entity);
+
 pub fn animate_animator_system<T, U, V>(
+    mut send_animate_complete_event: EventWriter<AnimateCompleteEvent>,
     mut commands: Commands,
     time: Res<Time>,
     mut query: Query<(Entity, &mut V, &mut T)>,
@@ -67,6 +72,7 @@ pub fn animate_animator_system<T, U, V>(
             if animator.get_timer().finished() {
                 match animator.get_tweening_type() {
                     TweeningType::Once { .. } => {
+                        send_animate_complete_event.send(AnimateCompleteEvent(entity));
                         commands.entity(entity).remove::<T>();
                     }
                     TweeningType::Loop { pause, .. } => {
@@ -91,6 +97,7 @@ pub fn animate_animator_system<T, U, V>(
 }
 
 pub fn component_animator_system<T: Component>(
+    mut send_animate_complete_event: EventWriter<AnimateCompleteEvent>,
     mut commands: Commands,
     time: Res<Time>,
     mut query: Query<(Entity, &mut T, &mut Animator<T>)>,
@@ -128,6 +135,7 @@ pub fn component_animator_system<T: Component>(
             if animator.timer.finished() {
                 match animator.tweening_type {
                     TweeningType::Once { .. } => {
+                        send_animate_complete_event.send(AnimateCompleteEvent(entity));
                         commands.entity(entity).remove::<Animator<T>>();
                     }
                     TweeningType::Loop { pause, .. } => {

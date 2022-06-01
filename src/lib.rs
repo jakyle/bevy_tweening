@@ -7,7 +7,7 @@
     unstable_features,
     unused_import_braces,
     unused_qualifications,
-    missing_docs
+    unused_doc_comments
 )]
 
 //! Tweening animation plugin for the Bevy game engine
@@ -115,7 +115,7 @@ pub use lens::{
     ColorMaterialColorLens, Lens, SpriteColorLens, TextColorLens, TransformPositionLens,
     TransformRotationLens, TransformScaleLens, UiPositionLens,
 };
-pub use plugin::TweeningPlugin;
+pub use plugin::{TweeningPlugin, AnimateCompleteEvent};
 
 /// How should this easing loop repeat
 #[derive(Clone, Copy)]
